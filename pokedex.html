@@ -1,0 +1,137 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Pokedex</title>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script type="text/javascript">
+           
+            // adds picture to container so it can be seen
+            function drawPic(picarray,i){
+                $('#container').append(picarray[i]);
+            }
+            // creates pokemon
+            function definePokemon(name, id, types, height, weight){
+                this.name = name;
+                this.id = id;
+                this.types = types;
+                this.height = height;
+                this.weight = weight;
+
+                console.log(this.name);
+                console.log(this.id);
+                console.log(this.types);
+                console.log(this.height);
+                console.log(this.weight);
+
+                return this;
+            }
+            // adds pokemon to pokedex
+            function summonPokemon(pokemon){
+                if($('#pokedex').children().length > 0){
+                    $('#pokedex').html('');
+                    if (pokemon.types.length>1){
+                        $('#pokedex').append('<h2 class="center">'+pokemon.name+'</h2>'+'<div class="center"><img class="center" src="http://pokeapi.co/media/img/'+id+'.png" id="'+id+'" alt="pokemon #'+id+'" title="pokemon #'+1+'"></div><h3>Types</h3><ul><li>'+pokemon.types[0]+'</li><li>'+pokemon.types[1]+'</li></ul><h3>Height</h3><p>'+pokemon.height+'</p><h3>Width</h3><p>'+pokemon.weight+'</p>');           
+                    }else{
+                        $('#pokedex').append('<h2 class="center">'+pokemon.name+'</h2>'+'<div class="center"><img class="center" src="http://pokeapi.co/media/img/'+id+'.png" id="'+id+'" alt="pokemon #'+id+'" title="pokemon #'+1+'"></div><h3>Types</h3><ul><li>'+pokemon.types[0]+'</li></ul><h3>Height</h3><p>'+pokemon.height+'</p><h3>Width</h3><p>'+pokemon.weight+'</p>');  
+                    }
+                }else{
+                    if (pokemon.types.length>1){
+                        $('#pokedex').append('<h2 class="center">'+pokemon.name+'</h2>'+'<div class="center"><img class="center" src="http://pokeapi.co/media/img/'+id+'.png" id="'+id+'" alt="pokemon #'+id+'" title="pokemon #'+1+'"></div><h3>Types</h3><ul><li>'+pokemon.types[0]+'</li><li>'+pokemon.types[1]+'</li></ul><h3>Height</h3><p>'+pokemon.height+'</p><h3>Width</h3><p>'+pokemon.weight+'</p>');           
+                    }else{
+                        $('#pokedex').append('<h2 class="center">'+pokemon.name+'</h2>'+'<div class="center"><img class="center" src="http://pokeapi.co/media/img/'+id+'.png" id="'+id+'" alt="pokemon #'+id+'" title="pokemon #'+1+'"></div><h3>Types</h3><ul><li>'+pokemon.types[0]+'</li></ul><h3>Height</h3><p>'+pokemon.height+'</p><h3>Width</h3><p>'+pokemon.weight+'</p>');  
+                    }
+                }
+            }
+
+            
+
+            $(document).ready(function(){
+
+                /*Draw out 151 pokemon on webpage*/
+                // initialize array of pictures
+                var picarray = [];
+                var nth = "";
+                // starting at pokemon 1 and going to 151
+                // add images of these pokemon to picarray
+                for(var i = 1; i <= 151; i++){
+                    nth = "pokemon #"+i;
+                    picarray.push(makepic(i,nth));
+                }
+                console.log(picarray[0]);
+                // creates & returns Img with src from 
+                // pokeapi page with given "i" and "title"
+                function makepic(i,title){
+                    var pic = new Image();
+                    pic.src = "http://pokeapi.co/media/img/"+i+".png";
+                    pic.id = i;
+                    pic.alt = title;
+                    pic.title = title;
+                    return pic;
+                }
+                // loops through picarray and calls drawPic()
+                for (var i = 0; i <= 151; i++){
+                    drawPic(picarray,i);
+                }
+                /*Finish drawing out 151 pokemon on webpage*/
+
+                $(document.body).on('click', 'img', function(){
+                    var pokenum = $(this).attr('id');
+                    var url = "http://pokeapi.co/api/v1/pokemon/"+pokenum;
+
+                    $.get(url,function(res){
+                        var pname = res.name;            //get name
+                        var pnum = pokenum;    //get number
+                        var ptypes = [];                 //array of types
+                        for(var i = 0; i < res.types.length; i++){
+                            ptypes.push(res.types[i].name);
+                        }
+                        var pweight = res.weight;        //get weight         
+                        var pheight = res.height;        //get height
+
+                        var poke = definePokemon(pname, pnum, ptypes, pweight, pheight);
+                        summonPokemon(poke);
+                    });
+                });
+
+            });
+        </script>
+    </head>
+        <body>
+            <div id="wrapper">
+                <div id="container"></div>
+                <div id="pokedex"></div>
+            </div>
+        <style>
+            #wrapper{
+                background: lightgoldenrodyellow;
+                width: 1250px;
+                border-radius: 10px;
+                margin: 0 auto;
+            }
+            #container{
+                background: lightblue;
+                width: 870px;
+                height: 2750px;
+                padding: 20px;
+                border-radius: 10px;
+                display: inline-block;
+            }
+            #pokedex{
+                background: white;
+                width: 315px;
+                height: 600px;
+                border-radius: 10px;
+                border: 10px solid lightpink;
+                display: inline-block;
+                vertical-align: top;
+                position: fixed;
+            }
+            .center{
+                text-align: center;
+            }
+            h3, p{
+                margin-left: 20px;
+            }
+        </style>
+    </body>
+</html>
